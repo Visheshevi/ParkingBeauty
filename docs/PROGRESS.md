@@ -8,8 +8,8 @@
 ## Current
 
 - **Stage:** 1 — Basic backend
-- **Step:** B0 — Foundations
-- **Next up:** B0.1 Repo scaffold
+- **Step:** B1 — ML model spike (runs right after B0.1, per ADR-0002)
+- **Next up:** B1.1 Model survey (needs `uv` installed)
 - **Blocked on owner:** —
 
 ---
@@ -32,9 +32,21 @@
 
 Everything is tested through the API with `pbctl`, `pbsim` and `make e2e`. **Postgres only:** no Redis, deck pools, replicas or rate limits yet (those come in R5).
 
-## B0 — Foundations
+> Order within Stage 1 (ADR-0002): **B0.1 → B1 → B0.2–B0.10 → B2 …**
 
-- [ ] **B0.1 Repo scaffold:** directories per SPEC §13, `.gitignore`, `.editorconfig`, `README.md`, `.env.example`, Makefile skeleton. ADR-0001 (serverless-first) and ADR-0002 (three-stage build order).
+## B0 — Foundations (part 1)
+
+- [x] **B0.1 Repo scaffold:** directories per SPEC §13, `.gitignore`, `.editorconfig`, `README.md`, `.env.example`, Makefile skeleton. ADR-0001 (serverless-first) and ADR-0002 (three-stage build order).
+
+## B1 — ML model spike (decision gate)
+
+- [ ] **B1.1** Survey **MIT/Apache-licensed** plate + vehicle detectors (e.g. `open-image-models` / `fast-alpr`). Check the licenses of both the weights and the training data. Write the shortlist in `packages/ml-models/MODEL_CARD.md`.
+- [ ] **B1.2** Build `/fixtures/images` (~40 images: plates, faces, no car, night, angled, NSFW placeholders). Use only the owner's own photos or CC0/public-domain images, with each source recorded.
+- [ ] **B1.3** Export to **ONNX** and **TFLite**; parity script (IoU ≥ 0.9, confidence within ±0.05); measure desktop inference time.
+- [ ] **B1.4** ADR-0003: model choice, thresholds, sizes. **If no viable model, stop and ask the owner.**
+
+## B0 — Foundations (part 2)
+
 - [ ] **B0.2 Local stack:** `docker-compose.yml` with Postgres, SeaweedFS, the Pub/Sub emulator, the Firebase Auth emulator, otel-lgtm, `tick-runner`. `make dev` up/down.
 - [ ] **B0.3 OpenAPI + codegen:** `openapi.yaml` with `/healthz`, `/readyz`, `/v1/bootstrap`; `oapi-codegen` (Go) + the `dart-dio` generator script (output unused until F0); `make gen`.
 - [ ] **B0.4 Go skeleton:** `cmd/api`, `cmd/worker`, `cmd/agent` (stub). Env config, `slog` JSON, OpenTelemetry, graceful shutdown, RFC 9457 errors, request-ID/trace middleware.
@@ -55,13 +67,6 @@ Everything is tested through the API with `pbctl`, `pbsim` and `make e2e`. **Pos
 - [ ] **B0.10 CI:** GitHub Actions on every PR: lint, unit, integration (testcontainers), `make e2e`, Schemathesis, `make gen` diff check, flag-schema validation.
 
 **Done when:** `make dev` boots; `/healthz` shows a trace in local Grafana; `make e2e` is green in CI.
-
-## B1 — ML model spike (decision gate)
-
-- [ ] **B1.1** Survey **MIT/Apache-licensed** plate + vehicle detectors (e.g. `open-image-models` / `fast-alpr`). Check the licenses of both the weights and the training data. Write the shortlist in `packages/ml-models/MODEL_CARD.md`.
-- [ ] **B1.2** Build `/fixtures/images` (~40 images: plates, faces, no car, night, angled, NSFW placeholders). Use only the owner's own photos or CC0/public-domain images, with each source recorded.
-- [ ] **B1.3** Export to **ONNX** and **TFLite**; parity script (IoU ≥ 0.9, confidence within ±0.05); measure desktop inference time.
-- [ ] **B1.4** ADR-0003: model choice, thresholds, sizes. **If no viable model, stop and ask the owner.**
 
 ## B2 — Auth and profiles API
 
@@ -266,8 +271,8 @@ A simple but well-structured app that drives the Stage 1 API. It's built on the 
 
 | ADR | Title | Date |
 |---|---|---|
-| 0001 | Serverless-first (Cloud Run + Neon + Pub/Sub) | — |
-| 0002 | Three-stage build: basic backend → basic frontend → remaining features | — |
+| 0001 | Serverless-first (Cloud Run + Neon + Pub/Sub) | 2026-11-01 |
+| 0002 | Three-stage build: basic backend → basic frontend → remaining features; B1 spike runs right after B0.1 | 2026-11-01 |
 
 ## Open questions for the owner
 
@@ -278,3 +283,4 @@ A simple but well-structured app that drives the Stage 1 API. It's built on the 
 <!-- One dated line per session, newest first. Example:
 - 2026-11-02 — B0.2 done. Pub/Sub emulator needs PUBSUB_EMULATOR_HOST; added to .env.example.
 -->
+- 2026-11-01 — B0.1 done: SPEC §13 directories (.gitkeep), .gitignore, .editorconfig, README, .env.example, Makefile stubs (each exits 1 and names its step), ADR-0000/0001/0002. Owner chose to run B1 next (ADR-0002). Not yet installed on owner's Mac: Go, uv, firebase-tools; Docker daemon not running. Repo LICENSE is MIT; owner to confirm that's intended.
