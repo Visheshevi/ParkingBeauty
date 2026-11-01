@@ -267,6 +267,14 @@ A simple but well-structured app that drives the Stage 1 API. It's built on the 
 
 ---
 
+## Features
+
+One entry per completed feature/task, newest first: what it is, what it does, and the branch it started on.
+
+| Feature | What it does | Branch |
+|---|---|---|
+| **B0.1 Repo scaffold** | Creates the SPEC §13 folder layout, `.gitignore` (keeps secrets, build output and model files out of Git), `.editorconfig`, `README.md`, `.env.example` (placeholder config, copied to `.env` from B0.2) and a `Makefile` whose `make help` lists every command (each one a stub naming the step that builds it). Adds ADR-0001 (serverless-first) and ADR-0002 (build order, B1 spike moved up). | `b0.1-repo-scaffold` |
+
 ## Decisions log
 
 | ADR | Title | Date |
