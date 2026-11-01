@@ -92,6 +92,7 @@ infra/tofu                        OpenTofu (cloud infrastructure)
 - Never send personal data (emails, raw photos, plate text) to an external LLM.
 - Never weaken a test to make it pass. Fix the code, or explain why the test is wrong and ask.
 - Never edit `docs/SPEC.md` without the owner asking. Propose changes in your summary instead.
+- Always create a new branch for a feature. Never develop anything on main. 
 
 ## Definition of done (every task)
 
