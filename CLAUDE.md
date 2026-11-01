@@ -93,6 +93,7 @@ infra/tofu                        OpenTofu (cloud infrastructure)
 - Never weaken a test to make it pass. Fix the code, or explain why the test is wrong and ask.
 - Never edit `docs/SPEC.md` without the owner asking. Propose changes in your summary instead.
 - Always create a new branch for a feature. Never develop anything on main. 
+- After every feature is created, add its description in a progress.md file. Clearly state the feature, what it does and which branch it was initially a part of
 
 ## Definition of done (every task)
 
