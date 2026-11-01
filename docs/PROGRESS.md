@@ -9,8 +9,8 @@
 
 - **Stage:** 1 — Basic backend
 - **Step:** B1 — ML model spike (runs right after B0.1, per ADR-0002)
-- **Next up:** B1.1 Model survey (needs `uv` installed)
-- **Blocked on owner:** —
+- **Next up:** B1.2 Fixtures (after the owner's decision below)
+- **Blocked on owner:** no off-the-shelf plate detector passes the licence rules; choose the route (see Open questions)
 
 ---
 
@@ -40,7 +40,7 @@ Everything is tested through the API with `pbctl`, `pbsim` and `make e2e`. **Pos
 
 ## B1 — ML model spike (decision gate)
 
-- [ ] **B1.1** Survey **MIT/Apache-licensed** plate + vehicle detectors (e.g. `open-image-models` / `fast-alpr`). Check the licenses of both the weights and the training data. Write the shortlist in `packages/ml-models/MODEL_CARD.md`.
+- [x] **B1.1** Survey **MIT/Apache-licensed** plate + vehicle detectors (e.g. `open-image-models` / `fast-alpr`). Check the licenses of both the weights and the training data. Write the shortlist in `packages/ml-models/MODEL_CARD.md`.
 - [ ] **B1.2** Build `/fixtures/images` (~40 images: plates, faces, no car, night, angled, NSFW placeholders). Use only the owner's own photos or CC0/public-domain images, with each source recorded.
 - [ ] **B1.3** Export to **ONNX** and **TFLite**; parity script (IoU ≥ 0.9, confidence within ±0.05); measure desktop inference time.
 - [ ] **B1.4** ADR-0003: model choice, thresholds, sizes. **If no viable model, stop and ask the owner.**
@@ -273,6 +273,7 @@ One entry per completed feature/task, newest first: what it is, what it does, an
 
 | Feature | What it does | Branch |
 |---|---|---|
+| **B1.1 Model survey** | Records licence-checked candidates for plate, face and vehicle detectors in `packages/ml-models/MODEL_CARD.md`, with verdicts and a recommended route (train our own YOLOX plate detector; BlazeFace full-range for server faces; YOLOX for vehicles). Research only, no code. | `b1.1-model-survey` |
 | **B0.1 Repo scaffold** | Creates the SPEC §13 folder layout, `.gitignore` (keeps secrets, build output and model files out of Git), `.editorconfig`, `README.md`, `.env.example` (placeholder config, copied to `.env` from B0.2) and a `Makefile` whose `make help` lists every command (each one a stub naming the step that builds it). Adds ADR-0001 (serverless-first) and ADR-0002 (build order, B1 spike moved up). | `b0.1-repo-scaffold` |
 
 ## Decisions log
@@ -285,10 +286,12 @@ One entry per completed feature/task, newest first: what it is, what it does, an
 ## Open questions for the owner
 
 - (Claude adds questions here when blocked; the owner answers inline.)
+- **2026-11-01 B1 gate:** no ready-made plate detector is both licence-clean and phone-sized (MODEL_CARD §1). Options: train our own YOLOX-Nano/Tiny on Open Images V7 + CCPD + CC0 data (recommended), or accept a risky model. Answer:
 
 ## Session notes
 
 <!-- One dated line per session, newest first. Example:
 - 2026-11-02 — B0.2 done. Pub/Sub emulator needs PUBSUB_EMULATOR_HOST; added to .env.example.
 -->
+- 2026-11-01 — B1.1 done: survey in MODEL_CARD.md. No plate detector passes (open-image-models weights trained with GPL YOLOv9 fork, data undocumented; others AGPL/NC/too big). Faces: most trained on WIDER FACE (NC); BlazeFace full-range is the clean option. Vehicles: YOLOX / EfficientDet-Lite0 pass (COCO caveat). Blocked on owner's route decision.
 - 2026-11-01 — B0.1 done: SPEC §13 directories (.gitkeep), .gitignore, .editorconfig, README, .env.example, Makefile stubs (each exits 1 and names its step), ADR-0000/0001/0002. Owner chose to run B1 next (ADR-0002). Not yet installed on owner's Mac: Go, uv, firebase-tools; Docker daemon not running. Repo LICENSE is MIT; owner to confirm that's intended.
